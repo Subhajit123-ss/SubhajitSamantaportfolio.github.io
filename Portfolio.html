@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subhajit Samanta | Developer & AI Systems Portfolio</title>
+  
+  <!-- Fonts: Plus Jakarta Sans, Space Grotesk, Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"Fira Code"', 'monospace'],
+          },
+          colors: {
+            slate: {
+              950: '#060913',
+              900: '#0b1120',
+              850: '#10172c',
+              800: '#17223b',
+              750: '#1e2b4a',
+            },
+            neon: {
+              cyan: '#00f2fe',
+              blue: '#4facfe',
+              violet: '#a855f7',
+              indigo: '#6366f1',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+            }
+          },
+          animation: {
+            'float-slow': 'floating 6s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 4s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            floating: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            pulseGlow: {
+              '0%': { opacity: '0.25', transform: 'scale(1)' },
+              '100%': { opacity: '0.6', transform: 'scale(1.08)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js (3D WebGL Canvas) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* Glassmorphism Design Tokens */
+    .glass-nav {
+      background: rgba(11, 17, 32, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glass-panel {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(16, 23, 44, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-panel-elevated {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(20, 29, 56, 0.85);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.75), 0 0 40px -10px rgba(99, 102, 241, 0.2);
+    }
+
+    .glass-card {
+      background: rgba(17, 25, 48, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25), 0 0 20px 0 rgba(0, 242, 254, 0.15);
+    }
+
+    .holo-glow {
+      position: relative;
+    }
+    .holo-glow::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0,242,254,0.4), rgba(99,102,241,0.4), rgba(168,85,247,0.4));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .editing-active [contenteditable="true"] {
+      outline: 2px dashed rgba(0, 242, 254, 0.6) !important;
+      outline-offset: 4px;
+      background: rgba(0, 242, 254, 0.06);
+      border-radius: 4px;
+      cursor: text;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #060913;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+
+    .typing-cursor::after {
+      content: '|';
+      display: inline-block;
+      margin-left: 4px;
+      color: #00f2fe;
+      animation: blink 0.9s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white relative overflow-x-hidden min-h-screen">
+
+  <!-- Interactive 3D WebGL Canvas Layer (Three.js Starry Constellation) -->
+  <div id="three-canvas-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- Ambient Dynamic Colored Lighting Orbs -->
+  <div class="fixed top-[-10vw] left-[-10vw] w-[50vw] h-[50vw] rounded-full bg-indigo-600/15 pointer-events-none filter blur-[150px] animate-pulse-glow z-0"></div>
+  <div class="fixed top-[45vh] right-[-10vw] w-[45vw] h-[45vw] rounded-full bg-cyan-500/10 pointer-events-none filter blur-[140px] animate-float-slow z-0"></div>
+  <div class="fixed bottom-[-10vw] left-[15vw] w-[40vw] h-[40vw] rounded-full bg-purple-600/10 pointer-events-none filter blur-[160px] z-0"></div>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <!-- Floating Edit Mode & Export Controller Toolbar -->
+  <aside aria-label="Editor Toolbar" class="fixed bottom-6 left-6 z-50 flex items-center gap-2 glass-panel p-2 rounded-2xl border border-white/20 shadow-2xl">
+    <button id="toggle-edit-btn" onclick="toggleEditMode()" class="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-200 transition border border-white/10 active:scale-95" title="Toggle edit mode to modify text directly on this page">
+      <i data-lucide="edit-3" class="w-4 h-4 text-cyan-400"></i>
+      <span id="edit-mode-label">Edit Portfolio</span>
+    </button>
+    <button onclick="exportCurrentHTML()" class="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white transition shadow-lg shadow-indigo-600/30 active:scale-95" title="Download the full updated single-file code ready to push to your GitHub repo">
+      <i data-lucide="download" class="w-4 h-4"></i>
+      <span>Export HTML</span>
+    </button>
+  </aside>
+
+  <!-- Sticky Glassmorphic Header -->
+  <header class="fixed top-0 left-0 right-0 z-40 px-4 sm:px-8 py-3.5 transition-all duration-300" id="main-header">
+    <div class="max-w-7xl mx-auto glass-nav rounded-2xl px-5 py-3 flex items-center justify-between border border-white/10 shadow-2xl">
+      
+      <!-- Brand Logo / Monogram -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-cyan-400 to-purple-500 p-[1.5px] transition-transform duration-300 group-hover:scale-105 shadow-lg shadow-indigo-500/25">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+            <span class="font-mono font-extrabold text-transparent bg-clip-text bg-gradient-to-tr from-cyan-400 to-indigo-300 text-sm">SS</span>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-bold text-sm tracking-tight text-white group-hover:text-cyan-300 transition-colors" data-editable="true">Subhajit Samanta</span>
+          <span class="text-[10px] font-mono text-cyan-400/90 tracking-wider flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+            IEM KOLKATA '29
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300 font-sans">
+        <a href="#about" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="text-slate-600 font-mono">01.</span> About
+        </a>
+        <a href="#skills" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="text-slate-600 font-mono">02.</span> Skills
+        </a>
+        <a href="#projects" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="text-slate-600 font-mono">03.</span> Projects
+        </a>
+        <a href="#education" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="text-slate-600 font-mono">04.</span> Education & Certs
+        </a>
+        <a href="#contact" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="text-slate-600 font-mono">05.</span> Contact
+        </a>
+      </nav>
+
+      <!-- Action Area -->
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/Subhajit123-ss" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl glass-panel hover:bg-slate-800 text-slate-300 hover:text-white transition border border-white/10" title="GitHub Profile (@Subhajit123-ss)">
+          <i data-lucide="github" class="w-4 h-4"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl glass-panel hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition border border-white/10" title="LinkedIn Profile">
+          <i data-lucide="linkedin" class="w-4 h-4"></i>
+        </a>
+
+        <!-- Mobile Drawer Toggle -->
+        <button id="mobile-toggle-btn" class="lg:hidden p-2 rounded-xl text-slate-300 hover:text-white glass-panel border border-white/10" aria-label="Toggle Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-drawer" class="hidden lg:hidden max-w-7xl mx-auto mt-2 glass-panel-elevated rounded-2xl p-5 flex flex-col gap-3 text-sm text-slate-300 border border-white/10">
+      <a href="#about" class="px-3 py-2 rounded-xl hover:bg-slate-800/80 hover:text-cyan-400 transition">01. About Profile</a>
+      <a href="#skills" class="px-3 py-2 rounded-xl hover:bg-slate-800/80 hover:text-cyan-400 transition">02. Skills Matrix</a>
+      <a href="#projects" class="px-3 py-2 rounded-xl hover:bg-slate-800/80 hover:text-cyan-400 transition">03. Projects Showcase</a>
+      <a href="#education" class="px-3 py-2 rounded-xl hover:bg-slate-800/80 hover:text-cyan-400 transition">04. Education & Certs</a>
+      <a href="#contact" class="px-3 py-2 rounded-xl hover:bg-slate-800/80 hover:text-cyan-400 transition">05. Contact Transmission</a>
+      <div class="flex items-center gap-3 pt-2 border-t border-white/10">
+        <a href="https://github.com/Subhajit123-ss" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center gap-2 text-xs font-mono text-slate-200">
+          <i data-lucide="github" class="w-4 h-4"></i> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center gap-2 text-xs font-mono text-cyan-300">
+          <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative z-10 min-h-screen flex items-center justify-center pt-32 pb-20 px-6">
+    <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Left Column: Hero Intro -->
+      <div class="lg:col-span-7 space-y-6 text-left">
+        
+        <!-- Live Status Pill -->
+        <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-panel border border-cyan-500/30 text-xs font-mono text-cyan-300 shadow-inner">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+          </span>
+          <span data-editable="true">B.Tech CSE Undergraduate @ IEM Kolkata</span>
+        </div>
+
+        <!-- Hero Headline -->
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-display font-extrabold tracking-tight text-white leading-tight">
+          Crafting <br class="hidden sm:inline" />
+          <span class="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            Intelligent Systems
+          </span><br />
+          & Software Solutions
+        </h1>
+
+        <!-- Dynamic Typing Subtitle -->
+        <div class="h-8 flex items-center text-lg sm:text-xl font-mono text-slate-300">
+          <span class="text-indigo-400 mr-2 font-bold">&gt;</span>
+          <span id="typed-role" class="text-cyan-300 font-semibold typing-cursor">Deep Learning & Vision AI</span>
+        </div>
+
+        <!-- Description Paragraph -->
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl" data-editable="true">
+          I am a Computer Science & Engineering undergraduate at IEM Kolkata, operating from Dainhat, West Bengal. I specialize in deep learning models (TensorFlow), generative AI prompt engineering, modern web architectures, and intelligent academic productivity applications like the Must Study App.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <a href="#projects" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-semibold text-xs sm:text-sm transition-all duration-300 shadow-xl shadow-indigo-600/30 flex items-center gap-2.5 hover:scale-105 active:scale-95">
+            <i data-lucide="layers" class="w-4 h-4"></i>
+            <span>View Featured Projects</span>
+          </a>
+          <a href="#contact" class="px-7 py-3.5 rounded-xl glass-panel hover:bg-slate-800 text-slate-200 font-semibold text-xs sm:text-sm transition-all duration-300 border border-white/10 hover:border-cyan-400/50 flex items-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
+            <span>Initiate Contact</span>
+          </a>
+          <div class="flex items-center gap-2">
+            <a href="https://github.com/Subhajit123-ss" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl glass-panel hover:bg-slate-800 text-slate-300 hover:text-white transition border border-white/10 hover:border-cyan-400/40" title="Visit GitHub (@Subhajit123-ss)">
+              <i data-lucide="github" class="w-4 h-4"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl glass-panel hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition border border-white/10 hover:border-cyan-400/40" title="Connect on LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Corrected Stat Counters: 3+ Featured Projects, 5+ Verified Certs, 2029 Graduating Class -->
+        <div class="pt-6 grid grid-cols-3 gap-4 border-t border-white/10 max-w-lg">
+          <div>
+            <div class="text-2xl sm:text-3xl font-display font-bold text-white">3+</div>
+            <div class="text-[11px] font-mono text-slate-400 mt-0.5">Featured Projects</div>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-display font-bold text-cyan-400">5+</div>
+            <div class="text-[11px] font-mono text-slate-400 mt-0.5">Verified Certifications</div>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-display font-bold text-white">2029</div>
+            <div class="text-[11px] font-mono text-slate-400 mt-0.5">Graduating Class</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive 3D Terminal & System Console -->
+      <div class="lg:col-span-5">
+        <div class="glass-panel-elevated rounded-3xl p-5 sm:p-6 border border-white/15 relative overflow-hidden shadow-2xl holo-glow tilt-card">
+          
+          <!-- Terminal Header -->
+          <div class="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-rose-500/80 shadow-md shadow-rose-500/30"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-500/80 shadow-md shadow-amber-500/30"></div>
+              <div class="w-3 h-3 rounded-full bg-emerald-500/80 shadow-md shadow-emerald-500/30"></div>
+            </div>
+            <span class="text-[11px] font-mono text-slate-400">bash — subhajit@iem-sys: ~</span>
+            <div class="flex items-center gap-1.5 text-xs text-cyan-400">
+              <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+
+          <!-- Terminal Output Body -->
+          <div id="terminal-body" class="font-mono text-xs space-y-2 text-slate-300 h-64 overflow-y-auto pr-1">
+            <div class="text-slate-500">// Welcome to Subhajit's interactive system prompt.</div>
+            <div class="text-slate-500">// Type <span class="text-cyan-400 font-bold">help</span> to view available options.</div>
+            <div class="pt-1">
+              <span class="text-emerald-400">guest@portfolio</span>:<span class="text-indigo-400">~</span>$ whoami
+            </div>
+            <div class="text-slate-200">
+              Subhajit Samanta — CSE Undergraduate at IEM Kolkata. Machine Learning Practitioner & Software Builder.
+            </div>
+            <div>
+              <span class="text-emerald-400">guest@portfolio</span>:<span class="text-indigo-400">~</span>$ cat location.txt
+            </div>
+            <div class="text-cyan-300">
+              Dainhat, Purba Bardhaman, West Bengal, India.
+            </div>
+          </div>
+
+          <!-- Terminal Interactive Input -->
+          <div class="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 font-mono text-xs">
+            <span class="text-emerald-400 font-bold">&gt;</span>
+            <input 
+              type="text" 
+              id="terminal-input" 
+              placeholder="type 'help', 'skills', 'certs', 'google', 'projects'..." 
+              class="w-full bg-transparent text-cyan-300 placeholder-slate-600 focus:outline-none"
+              autocomplete="off"
+            />
+            <button onclick="executeTerminalCommand()" class="px-2.5 py-1 rounded bg-indigo-600/50 hover:bg-indigo-600 text-[11px] text-white">Run</button>
+          </div>
+
+          <!-- Status Badge -->
+          <div class="mt-3 flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2 border-t border-white/5">
+            <span>Interactive Terminal</span>
+            <span class="text-indigo-400">System Ready</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="relative z-10 py-24 px-6 border-t border-slate-900">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-widest mb-3">
+          <i data-lucide="compass" class="w-4 h-4"></i>
+          <span>Origin & Background</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
+          From Dainhat to Engineering Excellence at IEM
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-4" data-editable="true">
+          A persistent journey dedicated to understanding the foundational mathematics of computation and applying modern artificial intelligence to concrete problems.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- Story Bio Card -->
+        <div class="lg:col-span-7 glass-panel p-8 rounded-3xl border border-white/10 flex flex-col justify-between tilt-card">
+          <div class="space-y-5">
+            <div class="flex items-center gap-3 text-cyan-400">
+              <i data-lucide="sparkle" class="w-5 h-5"></i>
+              <h3 class="font-display font-bold text-xl text-white">The Engineering Vision</h3>
+            </div>
+            
+            <p class="text-slate-300 text-sm leading-relaxed" data-editable="true">
+              I began my computing journey intrigued by how pure logic translates into impactful software. Residing in Dainhat, West Bengal, I channeled this curiosity toward the Institute of Engineering & Management (IEM), Kolkata.
+            </p>
+            <p class="text-slate-300 text-sm leading-relaxed" data-editable="true">
+              My engineering framework focuses on building scalable applications, designing neural models with TensorFlow, and applying generative AI prompt engineering to enhance development workflows.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                <span class="text-[11px] font-mono text-cyan-400 uppercase block mb-1">Academic Anchor</span>
+                <span class="text-sm font-semibold text-white block" data-editable="true">B.Tech in CSE</span>
+                <span class="text-xs text-slate-400 block" data-editable="true">IEM Kolkata (2025–2029)</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                <span class="text-[11px] font-mono text-indigo-400 uppercase block mb-1">Home Base</span>
+                <span class="text-sm font-semibold text-white block" data-editable="true">Dainhat, WB</span>
+                <span class="text-xs text-slate-400 block" data-editable="true">Purba Bardhaman, India</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 mt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+              <span>Available for Technical Research & Hackathons</span>
+            </div>
+            <a href="mailto:mrsubhajitsamanta10@gmail.com" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-2">
+              <i data-lucide="mail" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Email Subhajit</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Key Pillars Card -->
+        <div class="lg:col-span-5 grid grid-cols-1 gap-4">
+          
+          <div class="glass-card p-6 rounded-2xl tilt-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white" data-editable="true">Generative AI & Prompt Design</h4>
+                <span class="text-[11px] font-mono text-slate-400">Google Certified (Coursera)</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed" data-editable="true">
+              Few-shot prompt design, Chain-of-Thought reasoning, enterprise LLM workflow integration, and responsible AI guardrails.
+            </p>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl tilt-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white" data-editable="true">Deep Learning & Computer Vision</h4>
+                <span class="text-[11px] font-mono text-slate-400">TensorFlow & Keras Models</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed" data-editable="true">
+              TensorFlow and Keras architectures, MNIST handwritten digit classification, and interactive inference evaluation pipelines.
+            </p>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl tilt-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                <i data-lucide="book-marked" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white" data-editable="true">Academic Software Solutions</h4>
+                <span class="text-[11px] font-mono text-slate-400">Must Study App (In Progress)</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed" data-editable="true">
+              Developing intelligent revision assistants, syllabus coverage analytics, and timetable management software for engineering students.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Skills Matrix Section -->
+  <section id="skills" class="relative z-10 py-24 px-6 bg-slate-900/40 border-t border-slate-900">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-widest mb-2">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span>Competency Matrix</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
+          Technical Arsenal & Tooling
+        </h2>
+        <p class="text-slate-400 text-sm mt-3">
+          Hover or touch cards to inspect 3D perspective geometry and skill distributions.
+        </p>
+      </div>
+
+      <!-- Skill Filter Controls -->
+      <div class="flex flex-wrap items-center justify-center gap-2.5 mb-12" id="skill-filter-container">
+        <button onclick="filterSkills('all')" class="skill-tab active px-4 py-2 rounded-xl text-xs font-mono font-medium glass-panel border-cyan-500/50 bg-cyan-500/20 text-cyan-300 transition-all">
+          All Disciplines
+        </button>
+        <button onclick="filterSkills('prog')" class="skill-tab px-4 py-2 rounded-xl text-xs font-mono font-medium glass-panel text-slate-400 hover:text-white transition-all">
+          Core Languages
+        </button>
+        <button onclick="filterSkills('aiml')" class="skill-tab px-4 py-2 rounded-xl text-xs font-mono font-medium glass-panel text-slate-400 hover:text-white transition-all">
+          AI & Machine Learning
+        </button>
+        <button onclick="filterSkills('tools')" class="skill-tab px-4 py-2 rounded-xl text-xs font-mono font-medium glass-panel text-slate-400 hover:text-white transition-all">
+          Web & Engineering Tools
+        </button>
+      </div>
+
+      <!-- Skills Cards Grid with 3D Tilt -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="skills-grid">
+        
+        <!-- C -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="prog">
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-11 h-11 rounded-xl bg-blue-500/20 text-cyan-400 flex items-center justify-center font-mono font-bold text-lg">C</span>
+            <span class="text-[10px] font-mono text-cyan-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">92%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">C Programming</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Pointers, dynamic memory allocation, trees, graphs, sorting & search algorithms.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full" style="width: 92%"></div>
+          </div>
+        </div>
+
+        <!-- Java -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="prog">
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-11 h-11 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-mono font-bold text-lg">☕</span>
+            <span class="text-[10px] font-mono text-orange-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">88%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">Java (OOP)</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Object-Oriented Programming, Polymorphism, Collections Framework, Exception Handling.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-orange-500 to-amber-400 h-full rounded-full" style="width: 88%"></div>
+          </div>
+        </div>
+
+        <!-- Python -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="prog">
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-mono font-bold text-sm">Py</span>
+            <span class="text-[10px] font-mono text-amber-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">90%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">Python 3</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">NumPy, Pandas, model scripting, tensor algebra, data preprocessing pipelines.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full" style="width: 90%"></div>
+          </div>
+        </div>
+
+        <!-- JavaScript -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="prog">
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-11 h-11 rounded-xl bg-yellow-500/20 text-yellow-300 flex items-center justify-center font-mono font-bold text-sm">JS</span>
+            <span class="text-[10px] font-mono text-yellow-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">85%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">JavaScript (ES6+)</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Asynchronous execution, DOM engines, HTML5 2D/WebGL Canvas manipulation.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-yellow-500 to-amber-300 h-full rounded-full" style="width: 85%"></div>
+          </div>
+        </div>
+
+        <!-- TensorFlow -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="aiml">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+              <i data-lucide="network" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-mono text-indigo-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">86%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">TensorFlow & Keras</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Neural network architectures, Conv2D, Dropout, Pooling, categorical classification.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full" style="width: 86%"></div>
+          </div>
+        </div>
+
+        <!-- Prompt Engineering -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="aiml">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <i data-lucide="terminal" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-mono text-cyan-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">92%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">Prompt Engineering</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Zero-shot/few-shot prompts, Chain-of-Thought (CoT), persona design, LLM formatting.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-500 to-indigo-400 h-full rounded-full" style="width: 92%"></div>
+          </div>
+        </div>
+
+        <!-- Three.js & WebGL -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="tools">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center">
+              <i data-lucide="box" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-mono text-violet-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">84%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">Three.js & 3D WebGL</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Particle systems, scene graphs, camera parallax, perspective rendering.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-violet-500 to-purple-400 h-full rounded-full" style="width: 84%"></div>
+          </div>
+        </div>
+
+        <!-- Git & GitHub Codespaces -->
+        <div class="skill-box glass-card p-6 rounded-2xl tilt-card" data-cat="tools">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center">
+              <i data-lucide="git-branch" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-mono text-red-300 px-2 py-0.5 rounded bg-slate-900 border border-white/5">90%</span>
+          </div>
+          <h4 class="font-bold text-white text-base mb-1" data-editable="true">Git & GitHub</h4>
+          <p class="text-xs text-slate-400 mb-4" data-editable="true">Version control, branch management, collaborative workflows, cloud environments.</p>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-red-500 to-amber-500 h-full rounded-full" style="width: 90%"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Featured Projects Section (Strictly 3 Projects) -->
+  <section id="projects" class="relative z-10 py-24 px-6 border-t border-slate-900">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-widest mb-2">
+            <i data-lucide="folder-code" class="w-4 h-4"></i>
+            <span>Engineering Showcase</span>
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
+            Featured & Ongoing Projects
+          </h2>
+        </div>
+        <div class="mt-4 md:mt-0 text-xs font-mono text-slate-400">
+          3 Selected Builds • Interactive Architecture
+        </div>
+      </div>
+
+      <!-- Projects Grid (Exactly 3 Projects) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Project 1: Handwritten Digit Classifier -->
+        <div class="glass-panel rounded-3xl p-7 flex flex-col justify-between border border-white/10 tilt-card holo-glow">
+          <div>
+            <div class="w-full h-44 rounded-2xl bg-gradient-to-br from-indigo-950 via-slate-900 to-cyan-950 p-4 border border-white/10 flex flex-col justify-between relative overflow-hidden mb-6">
+              <div class="absolute inset-0 bg-[radial-gradient(#00f2fe_1px,transparent_1px)] [background-size:16px_16px] opacity-25"></div>
+              
+              <div class="flex items-center justify-between relative z-10">
+                <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">AI & Deep Learning</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              </div>
+
+              <div class="relative z-10 text-center space-y-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950/80 border border-cyan-400/30 text-xs font-mono text-cyan-300">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  <span>Deep Learning Model</span>
+                </div>
+                <div class="text-[11px] font-mono text-slate-400">Digit Recognition Pipeline</div>
+              </div>
+
+              <div class="text-[10px] font-mono text-slate-400 relative z-10 flex justify-between">
+                <span>Inference Interface</span>
+                <span>TensorFlow / Python</span>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-display font-bold text-white mb-2" data-editable="true">
+              Handwritten Digit Classifier
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6" data-editable="true">
+              Engineered a deep neural network trained on the standard MNIST handwritten digits dataset. Incorporates convolutional filters, dropout regularization, and an interactive browser-based testing interface for real-time inference.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-cyan-300 border border-white/5">TensorFlow</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-cyan-300 border border-white/5">Keras</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-cyan-300 border border-white/5">Python</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-cyan-300 border border-white/5">Computer Vision</span>
+            </div>
+
+            <button onclick="openModal('cnn')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-600/20 active:scale-95">
+              <i data-lucide="scan-line" class="w-4 h-4"></i>
+              <span>Launch Architecture Specs</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 2: Ongoing Must Study App -->
+        <div class="glass-panel rounded-3xl p-7 flex flex-col justify-between border border-purple-500/30 tilt-card holo-glow relative">
+          <div class="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-[10px] font-mono font-bold text-white shadow-lg shadow-purple-500/30">
+            ONGOING PROJECT
+          </div>
+
+          <div>
+            <div class="w-full h-44 rounded-2xl bg-gradient-to-br from-purple-950 via-slate-900 to-slate-950 p-4 border border-purple-500/30 flex flex-col justify-between relative overflow-hidden mb-6">
+              <div class="flex items-center justify-between relative z-10">
+                <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">Productivity & EdTech</span>
+                <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+              </div>
+
+              <div class="relative z-10 text-center space-y-1">
+                <div class="inline-block px-3 py-1 rounded-md bg-purple-500/20 border border-purple-400/40 font-mono text-xs text-purple-300 font-bold">
+                  Must Study App
+                </div>
+                <div class="text-[11px] text-slate-400 font-mono">Academic Syllabus & Timetable Engine</div>
+              </div>
+
+              <div class="text-[10px] font-mono text-slate-400 relative z-10 flex justify-between">
+                <span>Smart Revision Tracker</span>
+                <span>Active Development</span>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-display font-bold text-white mb-2" data-editable="true">
+              Must Study App
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6" data-editable="true">
+              An intelligent academic revision and timetable scheduling platform tailored for engineering undergraduates. Features dynamic syllabus coverage tracking, spaced repetition revision reminders, and exam-readiness analytics.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-purple-300 border border-white/5">JavaScript</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-purple-300 border border-white/5">State Management</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-purple-300 border border-white/5">Syllabus Planner</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-purple-300 border border-white/5">UI/UX</span>
+            </div>
+
+            <button onclick="openModal('muststudy')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 active:scale-95">
+              <i data-lucide="book-open-check" class="w-4 h-4"></i>
+              <span>View App Roadmap</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 3: Interactive Portfolio Website -->
+        <div class="glass-panel rounded-3xl p-7 flex flex-col justify-between border border-white/10 tilt-card holo-glow md:col-span-2 lg:col-span-1">
+          <div>
+            <div class="w-full h-44 rounded-2xl bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950 p-4 border border-white/10 flex flex-col justify-between relative overflow-hidden mb-6">
+              <div class="flex items-center justify-between relative z-10">
+                <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40">Systems & Web</span>
+                <i data-lucide="layout" class="w-4 h-4 text-sky-400"></i>
+              </div>
+
+              <div class="relative z-10 text-center space-y-1">
+                <div class="inline-block px-3 py-1 rounded-md bg-sky-500/20 border border-sky-400/40 font-mono text-xs text-sky-300 font-bold">
+                  Interactive Web Architecture
+                </div>
+                <div class="text-[11px] text-slate-400 font-mono">Tailwind CSS + Three.js Engine</div>
+              </div>
+
+              <div class="text-[10px] font-mono text-slate-400 relative z-10 flex justify-between">
+                <span>Responsive Glassmorphism</span>
+                <span>Single-File Build</span>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-display font-bold text-white mb-2" data-editable="true">
+              Interactive Portfolio Website
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6" data-editable="true">
+              High-performance, glassmorphic portfolio architecture featuring interactive 3D particle constellations, dynamic tilt physics, an in-browser shell terminal, and live content editing.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-sky-300 border border-white/5">JavaScript</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-sky-300 border border-white/5">Three.js</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-sky-300 border border-white/5">Tailwind CSS</span>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-900 text-sky-300 border border-white/5">DOM APIs</span>
+            </div>
+
+            <button onclick="openModal('portfolio')" class="w-full py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-600/20 active:scale-95">
+              <i data-lucide="layers" class="w-4 h-4"></i>
+              <span>Inspect Architecture</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Education & Certifications Timeline -->
+  <section id="education" class="relative z-10 py-24 px-6 border-t border-slate-900">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-widest mb-2">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+          <span>Academic Pedigree</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
+          Education & Credentials
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        
+        <!-- Academic Degrees -->
+        <div class="space-y-6">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+            </span>
+            Academic Degrees & Milestones
+          </h3>
+
+          <div class="relative pl-6 border-l-2 border-indigo-500/30 space-y-8">
+            
+            <div class="relative">
+              <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-950 border-2 border-cyan-400 shadow-md shadow-cyan-500/50"></div>
+              <div class="glass-panel p-6 rounded-2xl border border-white/10 tilt-card">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-mono text-cyan-300 font-semibold bg-cyan-500/10 px-2.5 py-0.5 rounded border border-cyan-500/20" data-editable="true">2025 – 2029 (Expected)</span>
+                  <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Active Enrolled
+                  </span>
+                </div>
+                <h4 class="text-lg font-bold text-white" data-editable="true">B.Tech in Computer Science & Engineering</h4>
+                <p class="text-sm font-medium text-slate-300 mt-1" data-editable="true">Institute of Engineering & Management (IEM), Kolkata</p>
+                <p class="text-xs text-slate-400 mt-3 leading-relaxed" data-editable="true">
+                  Coursework in Data Structures & Algorithms, Object-Oriented Design, Computer Architecture, Discrete Mathematics, and Artificial Intelligence.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-950 border-2 border-slate-600"></div>
+              <div class="glass-panel p-6 rounded-2xl border border-white/10 tilt-card">
+                <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md inline-block mb-2" data-editable="true">Pre-University Examination</span>
+                <h4 class="text-base font-bold text-white" data-editable="true">Higher Secondary (Pure Science: PCM)</h4>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed" data-editable="true">
+                  Rigorous preparation across vector calculus, classical mechanics, electrodynamics, and organic chemistry.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Strictly 5 Accreditations (Google & NPTEL Only) -->
+        <div class="space-y-6">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <i data-lucide="award" class="w-4 h-4"></i>
+            </span>
+            Professional Certifications (Google & NPTEL)
+          </h3>
+
+          <div class="space-y-4 max-h-[580px] overflow-y-auto pr-1">
+            
+            <!-- 1. Google Prompt Engineering -->
+            <div class="glass-card p-5 rounded-2xl border border-cyan-500/30 tilt-card flex items-start gap-4 holo-glow">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 border border-cyan-400/30">
+                <i data-lucide="terminal" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold text-white" data-editable="true">Google Prompt Engineering</h4>
+                  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 border border-cyan-400/30 px-2 py-0.5 rounded">Google / Coursera</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1" data-editable="true">Authorized by Google via Coursera</p>
+                <div class="text-[11px] text-slate-300 mt-2" data-editable="true">Advanced prompt design techniques, zero-shot/few-shot prompting, persona structuring, Chain-of-Thought (CoT) reasoning, and output format constraints for LLMs.</div>
+              </div>
+            </div>
+
+            <!-- 2. Google AI Essentials -->
+            <div class="glass-card p-5 rounded-2xl border border-indigo-500/30 tilt-card flex items-start gap-4 holo-glow">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5 border border-indigo-400/30">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold text-white" data-editable="true">Google AI Essentials</h4>
+                  <span class="text-[10px] font-mono text-indigo-300 bg-indigo-500/15 border border-indigo-400/30 px-2 py-0.5 rounded">Google / Coursera</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1" data-editable="true">Authorized by Google via Coursera</p>
+                <div class="text-[11px] text-slate-300 mt-2" data-editable="true">Foundational Generative AI architectures, real-world productivity pipelines, human-in-the-loop validation, and ethical/responsible AI deployment standards.</div>
+              </div>
+            </div>
+
+            <!-- 3. NPTEL IoT -->
+            <div class="glass-card p-5 rounded-2xl border border-white/5 tilt-card flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="cpu" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold text-white" data-editable="true">Introduction to Internet of Things (IoT)</h4>
+                  <span class="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">NPTEL Proctored</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1" data-editable="true">IIT Kharagpur / NPTEL (Ministry of Education, India)</p>
+                <div class="text-[11px] text-slate-300 mt-2" data-editable="true">Sensor interfacing, microcontrollers, wireless IoT protocol stacks, cloud telemetry, and edge-device integration.</div>
+              </div>
+            </div>
+
+            <!-- 4. NPTEL Environmental Science -->
+            <div class="glass-card p-5 rounded-2xl border border-white/5 tilt-card flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="leaf" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold text-white" data-editable="true">Environmental Science & Studies</h4>
+                  <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">NPTEL Proctored</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1" data-editable="true">NPTEL / Ministry of Education, India</p>
+                <div class="text-[11px] text-slate-300 mt-2" data-editable="true">Ecological system dynamics, sustainability indices, environmental impact assessment (EIA), and green engineering practices.</div>
+              </div>
+            </div>
+
+            <!-- 5. NPTEL Soft Skills -->
+            <div class="glass-card p-5 rounded-2xl border border-white/5 tilt-card flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="users" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold text-white" data-editable="true">Developing Soft Skills and Personality</h4>
+                  <span class="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">NPTEL Proctored</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1" data-editable="true">IIT Kanpur / NPTEL (Ministry of Education, India)</p>
+                <div class="text-[11px] text-slate-300 mt-2" data-editable="true">Interpersonal dynamics, executive technical communication, negotiation, and collaborative engineering leadership.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Contact Section -->
+  <section id="contact" class="relative z-10 py-24 px-6 border-t border-slate-900">
+    <div class="max-w-5xl mx-auto">
+      
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-widest mb-2">
+          <i data-lucide="mail-check" class="w-4 h-4"></i>
+          <span>Direct Transmission</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
+          Connect with Subhajit
+        </h2>
+        <p class="text-slate-400 text-sm mt-3" data-editable="true">
+          Open to engineering research collaborations, hackathon invitations, and software development discussions.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Direct Metadata Info -->
+        <div class="lg:col-span-5 glass-panel p-7 rounded-3xl border border-white/10 space-y-6 tilt-card">
+          <h3 class="font-display font-bold text-white text-lg">Direct Coordinates</h3>
+
+          <div class="space-y-4">
+            <!-- Email Item with Instant Copy -->
+            <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/5 flex items-center justify-between group">
+              <div class="flex items-center gap-3 overflow-hidden">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
+                <div class="overflow-hidden">
+                  <span class="text-[10px] font-mono uppercase text-slate-400 block">Personal Email</span>
+                  <span class="text-xs font-mono text-white truncate block" id="contact-email-text">mrsubhajitsamanta10@gmail.com</span>
+                </div>
+              </div>
+              <button onclick="copyEmailToClipboard()" class="p-2 rounded-lg bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 transition" title="Copy Email to Clipboard">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Location -->
+            <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/5 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Primary Location</span>
+                <span class="text-xs text-white" data-editable="true">Dainhat & IEM Kolkata, WB, India</span>
+              </div>
+            </div>
+
+            <!-- Timezone -->
+            <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/5 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <i data-lucide="clock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Time Horizon</span>
+                <span class="text-xs text-white">IST (UTC +5:30)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+            <span class="text-xs font-mono text-slate-400">Social Repositories:</span>
+            <div class="flex items-center gap-2">
+              <a href="https://github.com/Subhajit123-ss" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl glass-card text-slate-300 hover:text-white hover:border-cyan-400/50 transition flex items-center gap-2 text-xs font-mono" title="GitHub Profile">
+                <i data-lucide="github" class="w-4 h-4 text-cyan-400"></i>
+                <span>GitHub</span>
+              </a>
+              <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl glass-card text-slate-300 hover:text-cyan-300 hover:border-cyan-400/50 transition flex items-center gap-2 text-xs font-mono" title="LinkedIn Profile">
+                <i data-lucide="linkedin" class="w-4 h-4 text-cyan-400"></i>
+                <span>LinkedIn</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Modern Glassmorphic Form -->
+        <div class="lg:col-span-7 glass-panel p-8 rounded-3xl border border-white/10 tilt-card">
+          <form id="contact-form" class="space-y-4" onsubmit="handleContactSubmission(event)">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="contact-name" class="block text-xs font-mono text-slate-300 mb-1.5">Identifier / Name *</label>
+                <input 
+                  type="text" 
+                  id="contact-name" 
+                  required
+                  placeholder="e.g. Alan Turing" 
+                  class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm text-white placeholder-slate-600 transition"
+                />
+              </div>
+              <div>
+                <label for="contact-email" class="block text-xs font-mono text-slate-300 mb-1.5">Return Address / Email *</label>
+                <input 
+                  type="email" 
+                  id="contact-email" 
+                  required
+                  placeholder="name@domain.com" 
+                  class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm text-white placeholder-slate-600 transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="contact-subject" class="block text-xs font-mono text-slate-300 mb-1.5">Subject Header</label>
+              <input 
+                type="text" 
+                id="contact-subject" 
+                placeholder="Collaboration Proposal / Project Inquiry" 
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm text-white placeholder-slate-600 transition"
+              />
+            </div>
+
+            <div>
+              <label for="contact-body" class="block text-xs font-mono text-slate-300 mb-1.5">Transmission Message *</label>
+              <textarea 
+                id="contact-body" 
+                rows="4" 
+                required
+                placeholder="Greetings Subhajit, we would like to discuss..." 
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm text-white placeholder-slate-600 transition"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              id="send-btn"
+              class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-semibold text-xs sm:text-sm transition-all shadow-xl shadow-cyan-600/25 flex items-center justify-center gap-2 active:scale-98"
+            >
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span id="send-btn-label">Transmit Message</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Project Architecture Modal -->
+  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-panel-elevated w-full max-w-2xl rounded-3xl p-7 sm:p-8 border border-white/20 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal()" class="absolute top-5 right-5 p-2 rounded-xl glass-panel hover:bg-slate-800 text-slate-300 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div id="modal-body" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-12 border-t border-slate-900 bg-slate-950">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-sm text-cyan-400 font-bold">&lt;/&gt;</span>
+        <span class="text-xs text-slate-400">
+          Engineered & Maintained by <strong class="text-white font-semibold" data-editable="true">Subhajit Samanta</strong>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
+        <a href="https://github.com/Subhajit123-ss" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+        </a>
+        <span>•</span>
+        <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="linkedin" class="w-3.5 h-3.5"></i> LinkedIn
+        </a>
+      </div>
+
+      <div class="text-xs font-mono text-slate-500">
+        IEM Kolkata • CSE Cohort 2025–2029 • West Bengal
+      </div>
+
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-2.5 rounded-xl glass-panel hover:text-cyan-400 text-slate-400 transition" title="Return to Top">
+        <i data-lucide="arrow-up" class="w-4 h-4"></i>
+      </button>
+
+    </div>
+  </footer>
+
+  <!-- Scripts: 3D Scene, Dynamic Typing, Tilt Effects, Console & Editor -->
+  <script>
+    // 1. Initialization
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      initThreeScene();
+      initDynamicTyping();
+      initCardTiltEffects();
+      initTerminalPrompt();
+    });
+
+    // 2. Mobile Drawer
+    const mobileBtn = document.getElementById('mobile-toggle-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    mobileBtn.addEventListener('click', () => {
+      mobileDrawer.classList.toggle('hidden');
+    });
+    document.querySelectorAll('#mobile-drawer a').forEach(a => {
+      a.addEventListener('click', () => mobileDrawer.classList.add('hidden'));
+    });
+
+    // 3. Three.js Starry Background
+    let threeScene, threeCamera, threeRenderer, starParticles;
+
+    function initThreeScene() {
+      const container = document.getElementById('three-canvas-container');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      threeScene = new THREE.Scene();
+      threeCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+      threeCamera.position.z = 24;
+
+      threeRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      threeRenderer.setSize(width, height);
+      threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(threeRenderer.domElement);
+
+      const particleGeo = new THREE.BufferGeometry();
+      const count = 480;
+      const posArray = new Float32Array(count * 3);
+
+      for (let i = 0; i < count * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 65;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.14,
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.55,
+      });
+
+      starParticles = new THREE.Points(particleGeo, particleMat);
+      threeScene.add(starParticles);
+
+      let mouseX = 0, mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      window.addEventListener('resize', () => {
+        threeCamera.aspect = window.innerWidth / window.innerHeight;
+        threeCamera.updateProjectionMatrix();
+        threeRenderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+
+        if (starParticles) {
+          starParticles.rotation.y += 0.0007;
+          starParticles.rotation.x += 0.0002;
+        }
+
+        threeCamera.position.x += (mouseX * 2.2 - threeCamera.position.x) * 0.04;
+        threeCamera.position.y += (-mouseY * 2.2 - threeCamera.position.y) * 0.04;
+        threeCamera.lookAt(threeScene.position);
+
+        threeRenderer.render(threeScene, threeCamera);
+      }
+      animate3D();
+    }
+
+    // 4. Dynamic Typing Engine
+    function initDynamicTyping() {
+      const roles = [
+        "AI & Deep Learning Practitioner",
+        "Full-Stack Software Engineer",
+        "Prompt Engineer & IoT Innovator"
+      ];
+      let roleIdx = 0;
+      let charIdx = 0;
+      let isDeleting = false;
+      const el = document.getElementById('typed-role');
+
+      function typeCycle() {
+        const currentRole = roles[roleIdx];
+        if (isDeleting) {
+          el.innerText = currentRole.substring(0, charIdx - 1);
+          charIdx--;
+        } else {
+          el.innerText = currentRole.substring(0, charIdx + 1);
+          charIdx++;
+        }
+
+        let typeSpeed = isDeleting ? 40 : 80;
+
+        if (!isDeleting && charIdx === currentRole.length) {
+          typeSpeed = 2200;
+          isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+          isDeleting = false;
+          roleIdx = (roleIdx + 1) % roles.length;
+          typeSpeed = 500;
+        }
+
+        setTimeout(typeCycle, typeSpeed);
+      }
+      typeCycle();
+    }
+
+    // 5. 3D Card Tilt
+    function initCardTiltEffects() {
+      const tiltCards = document.querySelectorAll('.tilt-card');
+
+      tiltCards.forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+
+          const deltaX = (x - centerX) / centerX;
+          const deltaY = (y - centerY) / centerY;
+
+          const rotateX = -deltaY * 8;
+          const rotateY = deltaX * 8;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+      });
+    }
+
+    // 6. Terminal Console Logic
+    function initTerminalPrompt() {
+      const input = document.getElementById('terminal-input');
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          executeTerminalCommand();
+        }
+      });
+    }
+
+    function executeTerminalCommand() {
+      const input = document.getElementById('terminal-input');
+      const body = document.getElementById('terminal-body');
+      const val = input.value.trim().toLowerCase();
+      if (!val) return;
+
+      const userLine = document.createElement('div');
+      userLine.innerHTML = `<span class="text-emerald-400">guest@portfolio</span>:<span class="text-indigo-400">~</span>$ ${val}`;
+      body.appendChild(userLine);
+
+      const respLine = document.createElement('div');
+      respLine.className = 'text-slate-200';
+
+      switch (val) {
+        case 'help':
+          respLine.innerHTML = `Available options: <br/>- <span class="text-cyan-300 font-bold">whoami</span>: Display engineer background<br/>- <span class="text-cyan-300 font-bold">skills</span>: Summarize technical stack<br/>- <span class="text-cyan-300 font-bold">certs</span>: List Google & NPTEL certifications<br/>- <span class="text-cyan-300 font-bold">google</span>: View Google AI & Prompt Engineering credentials<br/>- <span class="text-cyan-300 font-bold">projects</span>: View Digit Classifier, Must Study App & Website<br/>- <span class="text-cyan-300 font-bold">socials</span>: View GitHub & LinkedIn profiles<br/>- <span class="text-cyan-300 font-bold">contact</span>: Show email, location & links<br/>- <span class="text-cyan-300 font-bold">clear</span>: Flush console buffer`;
+          break;
+        case 'whoami':
+          respLine.innerText = "Subhajit Samanta, CSE student at Institute of Engineering & Management (IEM), Kolkata. Certified in Google AI, Prompt Engineering & NPTEL IoT. Residing in Dainhat, WB.";
+          break;
+        case 'skills':
+          respLine.innerText = "Prompt Engineering, Generative AI, C, Java, Python, TensorFlow, IoT Architectures, JavaScript, Three.js, Tailwind CSS.";
+          break;
+        case 'google':
+          respLine.innerText = "Google / Coursera Certifications:\n 1. Google Prompt Engineering (Few-shot, CoT, Persona modeling, LLM constraints)\n 2. Google AI Essentials (GenAI workflows, LLM ethics, enterprise AI productivity)";
+          break;
+        case 'certs':
+          respLine.innerText = "GOOGLE COURSERA:\n • Google Prompt Engineering\n • Google AI Essentials\nNPTEL:\n • Introduction to Internet of Things (IoT)\n • Environmental Science & Studies\n • Developing Soft Skills and Personality";
+          break;
+        case 'projects':
+          respLine.innerText = "1. Handwritten Digit Classifier (TensorFlow / Deep Learning)\n2. Must Study App (Ongoing: Smart Study & Revision Scheduler)\n3. Interactive Portfolio Website (Three.js & Tailwind CSS)";
+          break;
+        case 'socials':
+        case 'links':
+          respLine.innerHTML = `GitHub: <a href="https://github.com/Subhajit123-ss" target="_blank" class="text-cyan-400 underline">github.com/Subhajit123-ss</a><br/>LinkedIn: <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="text-cyan-400 underline">linkedin.com/in/subhajit-samanta-619872384</a>`;
+          break;
+        case 'contact':
+          respLine.innerHTML = `Email: <span class="text-white">mrsubhajitsamanta10@gmail.com</span><br/>Location: Dainhat / Kolkata, India<br/>GitHub: <a href="https://github.com/Subhajit123-ss" target="_blank" class="text-cyan-400 underline">Subhajit123-ss</a><br/>LinkedIn: <a href="https://www.linkedin.com/in/subhajit-samanta-619872384?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="text-cyan-400 underline">subhajit-samanta-619872384</a>`;
+          break;
+        case 'clear':
+          body.innerHTML = '';
+          input.value = '';
+          return;
+        default:
+          respLine.className = 'text-rose-400';
+          respLine.innerText = `Option not recognized: '${val}'. Type 'help' for available options.`;
+      }
+
+      body.appendChild(respLine);
+      input.value = '';
+      body.scrollTop = body.scrollHeight;
+    }
+
+    // 7. Skill Filtering
+    function filterSkills(category) {
+      const buttons = document.querySelectorAll('.skill-tab');
+      buttons.forEach(btn => {
+        btn.classList.remove('active', 'border-cyan-500/50', 'bg-cyan-500/20', 'text-cyan-300');
+        btn.classList.add('text-slate-400');
+      });
+
+      event.target.classList.add('active', 'border-cyan-500/50', 'bg-cyan-500/20', 'text-cyan-300');
+      event.target.classList.remove('text-slate-400');
+
+      const boxes = document.querySelectorAll('.skill-box');
+      boxes.forEach(box => {
+        if (category === 'all' || box.getAttribute('data-cat') === category) {
+          box.style.display = 'block';
+        } else {
+          box.style.display = 'none';
+        }
+      });
+    }
+
+    // 8. Project Modals
+    const modalPayloads = {
+      cnn: {
+        title: "Handwritten Digit Classifier",
+        category: "Deep Learning & Vision AI",
+        specs: [
+          "Convolutional 2D Layers with ReLU non-linearity for edge & spatial numeral feature extraction.",
+          "MaxPooling 2D (2x2) reducing feature dimension footprint while retaining salient activations.",
+          "Softmax Dense Layer producing probability distribution across digit classes (0-9).",
+          "Web inference testbench for interactive real-time digit recognition evaluation."
+        ],
+        tags: ["TensorFlow", "Keras", "Python 3", "Computer Vision", "MNIST"]
+      },
+      muststudy: {
+        title: "Must Study App (Ongoing Build)",
+        category: "Academic Productivity & EdTech",
+        specs: [
+          "Curriculum syllabus breakdown engine tracking percentage completion per engineering subject.",
+          "Spaced-repetition revision scheduler generating reminders before semester examinations.",
+          "Quick formula and note card bookmarking system for high-yield revision topics.",
+          "Client-side persistent offline caching for seamless access without continuous internet access."
+        ],
+        tags: ["In Progress", "JavaScript", "Study Assistant", "EdTech", "Tailwind CSS"]
+      },
+      portfolio: {
+        title: "Interactive Portfolio Website",
+        category: "Systems & Web Architecture",
+        specs: [
+          "Lightweight Three.js WebGL canvas rendering 480+ particle constellation with mouse parallax.",
+          "Dynamic card tilt physics using 3D perspective transforms with mouse position interpolation.",
+          "In-browser interactive bash console emulator parsing commands in real-time.",
+          "Client-side live edit mode with one-click single-file HTML generation for GitHub Pages."
+        ],
+        tags: ["Three.js", "Tailwind CSS", "JavaScript", "HTML5"]
+      }
+    };
+
+    function openModal(id) {
+      const data = modalPayloads[id];
+      if (!data) return;
+
+      const body = document.getElementById('modal-body');
+      body.innerHTML = `
+        <span class="text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">${data.category}</span>
+        <h3 class="text-2xl font-display font-bold text-white mt-2">${data.title}</h3>
+        <div class="glass-card p-5 rounded-2xl border border-white/5 space-y-3 mt-4">
+          <span class="text-xs font-mono text-cyan-400 uppercase tracking-wider block">Key Technical Specifications:</span>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            ${data.specs.map(s => `<li>${s}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-3">
+          ${data.tags.map(t => `<span class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-900 text-cyan-300 border border-white/10">${t}</span>`).join('')}
+        </div>
+      `;
+
+      const modal = document.getElementById('project-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('project-modal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    document.getElementById('project-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('project-modal')) closeModal();
+    });
+
+    // 9. Toast Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const borderColor = type === 'success' ? 'border-emerald-500/60' : 'border-cyan-500/60';
+      const icon = type === 'success' ? 'check-circle' : 'info';
+      const iconColor = type === 'success' ? 'text-emerald-400' : 'text-cyan-400';
+
+      toast.className = `glass-panel-elevated ${borderColor} px-4 py-3 rounded-2xl flex items-center gap-3 text-xs text-white shadow-2xl transition-all duration-300 pointer-events-auto transform translate-y-4 opacity-0`;
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="w-4 h-4 ${iconColor} shrink-0"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // 10. Copy Email
+    function copyEmailToClipboard() {
+      const email = "mrsubhajitsamanta10@gmail.com";
+      const dummy = document.createElement("input");
+      dummy.value = email;
+      document.body.appendChild(dummy);
+      dummy.select();
+      try {
+        document.execCommand('copy');
+        showToast("Email address copied to clipboard!", "success");
+      } catch (err) {
+        showToast("Email: " + email, "info");
+      }
+      document.body.removeChild(dummy);
+    }
+
+    // 11. Contact Form
+    function handleContactSubmission(e) {
+      e.preventDefault();
+      const btn = document.getElementById('send-btn');
+      const label = document.getElementById('send-btn-label');
+      const prev = label.innerText;
+
+      btn.disabled = true;
+      label.innerText = "Transmitting to Subhajit...";
+
+      setTimeout(() => {
+        showToast("Transmission successful! Subhajit will get back to you.", "success");
+        document.getElementById('contact-form').reset();
+        btn.disabled = false;
+        label.innerText = prev;
+      }, 1000);
+    }
+
+    // 12. Edit Portfolio Mode
+    let isEditingMode = false;
+
+    function toggleEditMode() {
+      isEditingMode = !isEditingMode;
+      const editableElements = document.querySelectorAll('[data-editable="true"]');
+      const label = document.getElementById('edit-mode-label');
+
+      editableElements.forEach(el => {
+        el.contentEditable = isEditingMode ? "true" : "false";
+      });
+
+      if (isEditingMode) {
+        document.body.classList.add('editing-active');
+        label.innerText = "Finish Editing";
+        showToast("Edit Mode Active! Click any text to customize it directly.", "info");
+      } else {
+        document.body.classList.remove('editing-active');
+        label.innerText = "Edit Portfolio";
+        showToast("Changes saved in memory. Click 'Export HTML' to download!", "success");
+      }
+    }
+
+    // 13. Export HTML Single-File
+    function exportCurrentHTML() {
+      const wasEditing = isEditingMode;
+      if (wasEditing) toggleEditMode();
+
+      const pageContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+      const blob = new Blob([pageContent], { type: 'text/html' });
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = 'index.html';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(downloadLink.href);
+
+      showToast("Downloaded 'index.html'! Ready to drag & drop into GitHub repository.", "success");
+    }
+  </script>
+</body>
+</html>
